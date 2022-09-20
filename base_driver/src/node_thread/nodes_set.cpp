@@ -399,7 +399,7 @@ private:
       buffer[3] = ((int16_t)velocity_r) & 0xFF;
 
       Comm_send_package(eSerialSetVelocity, buffer, 4, invoke_id);
-      RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"[Velocity_Subscriber]:mode = %d,velocity_r = %f,velocity_l = %f",mode,velocity_r,velocity_l);
+      RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"[Velocity_Subscriber]:mode = %d,velocity_r = %d mm/s,velocity_l = %d mm/s",mode,velocity_r,velocity_l);
   }
   uint64_t received_flag;
   rclcpp::TimerBase::SharedPtr timer_;
