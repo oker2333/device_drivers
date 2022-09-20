@@ -138,3 +138,7 @@ void pub_semaphore_wait(void)
 	sem_wait(pub_sem_ptr);
 }
 
+void pub_semaphore_destroy(void)
+{
+	sem_destroy(pub_sem_ptr);
+}

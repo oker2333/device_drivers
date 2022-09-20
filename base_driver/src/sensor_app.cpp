@@ -14,16 +14,42 @@
 
 #include <memory>
 #include <unistd.h>
+#include <signal.h>
 
 #include "recv_proc_task.hpp"
 
 #include "nodes_set.hpp"
 #include "nodes_in_component.hpp"
+#include "uart_synchronous.hpp"
 
 #include "rclcpp/rclcpp.hpp"
 
+void exit_handler(int signo)
+{
+    if (signo == SIGINT){
+        fprintf(stderr,"Ctrl+C,quit !\n");
+        fflush(stderr);
+        rclcpp::shutdown();
+        exit(0);
+    }
+}
+
+void InitSignal(void)
+{
+    struct sigaction sa,osa;
+    sa.sa_handler = exit_handler;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    int ret = sigaction(SIGINT,&sa,&osa);
+    if(ret <0){
+        printf("set signal ctrl+c failure!\n");
+    }
+}
+
 int main(int argc, char * argv[])
 {
+  InitSignal();
+
   rclcpp::init(argc, argv);
 
   recv_proc_init();

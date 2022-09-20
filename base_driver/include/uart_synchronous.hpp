@@ -48,5 +48,6 @@ bool semaphore_post(Sensor_Id_t id);
 void pub_sem_init(void);
 void pub_semaphore_post(void);
 void pub_semaphore_wait(void);
+void pub_semaphore_destroy(void);
 
 #endif
