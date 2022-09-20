@@ -1,0 +1,6 @@
+int8 led_type       # 灯显类型 0x01：白长亮 0x03：长灭 0x04：闪烁
+uint16 blink_num    # 闪次数 0xFFFF：一直闪  0~0xFFFE：闪指定次数
+int8 blink_freqency # 闪频率 单位：Hz
+int8 led_status     # 闪后状态 0x01：白长亮 0x03：长灭
+---
+bool success    # 0:失败 1:成功

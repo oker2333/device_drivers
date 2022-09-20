@@ -1,0 +1,4 @@
+int32 brushes_id		# 0:中刷，1&2：边刷
+uint16 level			# 档位
+---
+bool success          	# 1；成功，0：失败

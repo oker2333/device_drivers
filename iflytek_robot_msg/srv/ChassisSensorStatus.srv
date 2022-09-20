@@ -1,0 +1,4 @@
+int32 cmd				#0:设置档位，1:状态获取
+---
+bool success          	#1；成功，0：失败
+float32 status			#cmd = 1,代表当前档位

@@ -1,0 +1,7 @@
+int32 cmd						#0:设置速度 1：状态获取
+float32 linear_speed			#线速度，单位m/ms
+float32 angular_speed			#角速度，单位rad/ms
+---
+bool success          			#1；成功，0：失败
+float32 status_linear_speed		#cmd = 1 线速度，单位m/ms
+float32 status_angular_speed	#cmd = 1 角速度，单位rad/ms
