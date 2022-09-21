@@ -90,7 +90,7 @@ union INT_TO_U8
 };
 
 #define		REPORT_LEN			200
-#define   	SYS_CMD_SIZE        256
+#define   	SYS_CMD_SIZE        2048
 #define   	SYS_CMD_MIN        	12
 typedef struct
 {
