@@ -106,13 +106,13 @@ static void* ota_task(void *arg)
 
     while(remainder)
     {
-        cmd_buffer[1] = (uint8_t)(offset >> 24) & 0xff;     /*数据序号*/
-        cmd_buffer[2] = (uint8_t)(offset >> 16) & 0xff;
-        cmd_buffer[3] = (uint8_t)(offset >> 8) & 0xff;
-        cmd_buffer[4] = (uint8_t)(offset >> 0) & 0xff;
+        cmd_buffer[1] = (offset >> 24) & 0xff;     /*数据序号*/
+        cmd_buffer[2] = (offset >> 16) & 0xff;
+        cmd_buffer[3] = (offset >> 8) & 0xff;
+        cmd_buffer[4] = (offset >> 0) & 0xff;
 
-        cmd_buffer[5] = (uint8_t)(frame_len >> 8) & 0xff;   /*数据长度*/
-        cmd_buffer[6] = (uint8_t)(frame_len >> 0) & 0xff;
+        cmd_buffer[5] = (frame_len >> 8) & 0xff;   /*数据长度*/
+        cmd_buffer[6] = (frame_len >> 0) & 0xff;
         
         memcpy(&cmd_buffer[7],&ota_buff[offset],frame_len); /*数据内容*/
         
