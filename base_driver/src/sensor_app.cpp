@@ -18,6 +18,7 @@
 
 #include "recv_proc_task.hpp"
 
+#include "ota.hpp"
 #include "nodes_set.hpp"
 #include "nodes_in_component.hpp"
 #include "uart_synchronous.hpp"
@@ -52,11 +53,15 @@ int main(int argc, char * argv[])
 
   rclcpp::init(argc, argv);
 
+  ota_init();
+
   recv_proc_init();
 
   ROS2_node_start();
 
   recv_proc_join();
+
+  ota_deinit();
 
   rclcpp::shutdown();
 

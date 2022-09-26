@@ -176,24 +176,14 @@ void get_device_info_result(uint8_t* sn_s,uint16_t* chip_id_s,uint8_t* version_s
 
 static uint64_t OTA_message_result = 0;
 
-void set_OTA_message_result(uint16_t sysParseCmdData, uint8_t status)
+void set_OTA_message_result(uint8_t status)
 {
-	uint16_t mask = 1 << (sysParseCmdData & 0x0F);
-	if(status)
-	{
-		OTA_message_result = OTA_message_result | mask;
-	}
-	else
-	{
-		OTA_message_result = OTA_message_result & ~mask;
-	}
+	OTA_message_result = status;
 }
 
-uint8_t get_OTA_message_result(uint16_t sysParseCmdData)
+uint8_t get_OTA_message_result(void)
 {
-	uint16_t mask = 1 << (sysParseCmdData & 0xFF);
-	uint8_t ret = OTA_message_result & mask;
-	return ret;
+	return OTA_message_result;
 }
 
 static uint8_t pressure_sensor_data;
@@ -1452,12 +1442,12 @@ void Comm_cmdExecute(uint8_t *sysParseCmdBuf,uint16_t sysCmdLen)
 		case eSerialOTACmdUpgradeAck:
 			cmd = (sysParseCmdBuf[9] << 8) + sysParseCmdBuf[10];
 			RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"eSerialOTACmdUpgradeAck:cmd = 0x%x",cmd);
-			set_OTA_message_result(cmd,sysParseCmdBuf[FRAME_DATA_OFFSET]);
+			set_OTA_message_result(sysParseCmdBuf[FRAME_DATA_OFFSET+1]);
 
 			if(cmd == eSerialOTACmdUpgradeStart)
 				semaphore_post(OTA_Upgrade_Start_e);
 			else if(cmd == eSerialOTACmdUpgradeStatus)
-				semaphore_post(OTA_Upgrade_Status_e);
+				semaphore_post(OTA_Upgrade_End_e);
 			else if(cmd == eSerialOTACmdUpgradeDataFrame)
 				semaphore_post(OTA_Upgrade_Frame_e);
 		break;

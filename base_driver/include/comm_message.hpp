@@ -237,6 +237,7 @@ extern commParmType commParmInfo;
 uint16_t Comm_cmdParse(void);
 void Comm_send_package(TypeDefCmd frameCmd, uint8_t* buffer, uint16_t len, uint16_t frameCmdCounter);
 void USART_SEND_FUN(uint8_t* buffer, uint16_t len);
+uint16_t CRC16_CCITT_FALSE(uint8_t *puchMsg, uint32_t usDataLen);
 
 void sensorActiveReportType(void);
 
@@ -336,8 +337,8 @@ void get_station_air_drying(int8_t *sensor_data);
 void set_station_self_clean(int8_t sensor_data);
 void get_station_self_clean(int8_t *sensor_data);
 
-void set_OTA_message_result(uint16_t sysParseCmdData, uint8_t status);
-uint8_t get_OTA_message_result(uint16_t sysParseCmdData);
+void set_OTA_message_result(uint8_t status);
+uint8_t get_OTA_message_result(void);
 
 void set_sensor_status_result(uint16_t status);
 uint8_t get_sensor_status_result(uint16_t sysParseCmdData);

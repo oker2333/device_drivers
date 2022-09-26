@@ -36,7 +36,8 @@ add_executable(sensor_app
   src/uart_protocol/recv_proc_task.cpp
   src/uart_protocol/uart_synchronous.cpp
   src/uart_protocol/uart_ttys.cpp
-  src/uart_protocol/comm_message.cpp)
+  src/uart_protocol/comm_message.cpp
+  src/ota_thread/ota.cpp)
 
 ament_target_dependencies(sensor_app
   "geometry_msgs"

@@ -100,7 +100,7 @@ bool semaphore_post(Sensor_Id_t id)
 {
 	sem_t* sem_ptr = search_semaphore(id);
 	if(sem_ptr == NULL){
-		RCLCPP_WARN(rclcpp::get_logger("rclcpp"),"semaphore posted doesn't exist");
+		RCLCPP_WARN(rclcpp::get_logger("rclcpp"),"semaphore %d posted doesn't exist",id);
 		return false;
 	}
 	

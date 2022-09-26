@@ -32,9 +32,9 @@ typedef enum workday
     SensorEnabling_e,
     HeatBeat_e,
     CleanMop_e,
-    OTA_Upgrade_Start_e,
-    OTA_Upgrade_Status_e,
-    OTA_Upgrade_Frame_e,
+    OTA_Upgrade_Start_e,    //0x0500
+    OTA_Upgrade_End_e,   //0x0502
+    OTA_Upgrade_Frame_e,    //0x0503
     SupplyWater_e,
     publish_immediately_e,
     sensor_num_e
