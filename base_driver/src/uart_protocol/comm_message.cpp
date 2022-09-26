@@ -15,6 +15,7 @@ unsigned char messageSF[2] = {0xA5,0xA5};	//start_flag
 
 bool datalink_frame_send(TypeDefCmd cmd,Sensor_Id_t id,uint8_t* buffer,uint16_t len)
 {
+	RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"[datalink_frame_send]cmd = 0x%x",cmd);
 	uint16_t invoke_id = 0;
 	bool ret = false;
 	for(int i = 1;i <= RYTEIES;i++)
@@ -26,7 +27,7 @@ bool datalink_frame_send(TypeDefCmd cmd,Sensor_Id_t id,uint8_t* buffer,uint16_t 
 			ret = true;
             break;
         }else{
-			RCLCPP_WARN(rclcpp::get_logger("rclcpp"),"[datalink_frame_send]cmd = 0x%4x,wait ack failed %d times",cmd,i);
+			RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),"[datalink_frame_send]wait ack failed %d times",i);
 		}
 	}
 	return ret;
@@ -80,7 +81,7 @@ void get_online_message_result(uint8_t* online_result_p,uint16_t* slave_protocol
 {
 	*online_result_p = online_result;
 	*slave_protocol_version_p = slave_protocol_version;
-	RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"[original data]online_result = %d,slave_protocol_version, = %d",online_result,slave_protocol_version);
+	RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"[original data]online_result = %d,slave_protocol_version = %d",online_result,slave_protocol_version);
 }
 
 static uint8_t sensor_data[10] = {0};
@@ -1440,13 +1441,13 @@ void Comm_cmdExecute(uint8_t *sysParseCmdBuf,uint16_t sysCmdLen)
 		break;
 
 		case eSerialOTACmdUpgradeAck:
-			cmd = (sysParseCmdBuf[9] << 8) + sysParseCmdBuf[10];
+			cmd = (sysParseCmdBuf[10] << 8) + sysParseCmdBuf[11];
 			RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"eSerialOTACmdUpgradeAck:cmd = 0x%x",cmd);
 			set_OTA_message_result(sysParseCmdBuf[FRAME_DATA_OFFSET+1]);
 
 			if(cmd == eSerialOTACmdUpgradeStart)
 				semaphore_post(OTA_Upgrade_Start_e);
-			else if(cmd == eSerialOTACmdUpgradeStatus)
+			else if(cmd == eSerialOTACmdUpgradeEnd)
 				semaphore_post(OTA_Upgrade_End_e);
 			else if(cmd == eSerialOTACmdUpgradeDataFrame)
 				semaphore_post(OTA_Upgrade_Frame_e);
@@ -1472,7 +1473,7 @@ void Comm_send_package(TypeDefCmd frameCmd, uint8_t* buffer, uint16_t len,uint16
 	
 	uint16_t check_sum = 0;
 	uint16_t reported_len = 0;
-	uint8_t  reported_buffer[64] = {0};
+	uint8_t  reported_buffer[200] = {0};
 	
 	reported_buffer[reported_len++]= 0xA5;	//帧头
 	reported_buffer[reported_len++]= 0xA5;	

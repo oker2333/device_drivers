@@ -44,6 +44,7 @@ int GetFileSize(char *_pName)
 
 static void* ota_task(void *arg)
 {
+    sleep(3);
     int64_t read_bytes = 0;
     int64_t read_counter = 0;
     uint8_t cmd_buffer[CMD_BUFFER_LEN];
@@ -51,16 +52,16 @@ static void* ota_task(void *arg)
     int64_t file_size = GetFileSize(arg);
     if(file_size <= 0){
         RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),"get %s file size failed",arg);
-        return;
+        return NULL;
     }
 
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"now start to download %s,file size = %ld",arg,file_size);
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"now start to download %s,file size = %ld bytes",arg,file_size);
 
     uint8_t *ota_buff = malloc(file_size);
     if(ota_buff == NULL)
     {
         RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),"ota_buff malloc failed");
-        return;
+        return NULL;
     }
 
     int fd = open(arg,O_RDONLY);
@@ -76,7 +77,7 @@ static void* ota_task(void *arg)
         if(read_counter == file_size){
             break;
         }else if(read_counter > file_size){
-            return;
+            return NULL;
         }
     }
     close(fd);
@@ -86,15 +87,16 @@ static void* ota_task(void *arg)
     uint8_t ota_device = HOST;
     uint16_t CRC16 = CRC16_CCITT_FALSE(ota_buff,file_size);
 
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"%s CRC16 = %d",arg,CRC16);
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"%s CRC16 = 0x%x",arg,CRC16);
 
     cmd_buffer[0] = ota_device;
     cmd_buffer[1] = (CRC16 >> 8) & 0xff;
     cmd_buffer[2] = (CRC16 >> 0) & 0xff;
     if(!datalink_frame_send(eSerialOTACmdUpgradeStart,OTA_Upgrade_Start_e,cmd_buffer,3)){
-        return;
+        return NULL;
     }
 
+    uint16_t frame_index = 0;
     uint32_t offset = 0;
     uint32_t remainder = file_size;
     uint16_t frame_max_len = HOST_FRAME_MAX_LEN;
@@ -111,19 +113,23 @@ static void* ota_task(void *arg)
 
         cmd_buffer[5] = (uint8_t)(frame_len >> 8) & 0xff;   /*数据长度*/
         cmd_buffer[6] = (uint8_t)(frame_len >> 0) & 0xff;
-
+        
         memcpy(&cmd_buffer[7],&ota_buff[offset],frame_len); /*数据内容*/
-        if(datalink_frame_send(eSerialOTACmdUpgradeStart,OTA_Upgrade_Frame_e,cmd_buffer,frame_len+1+4+2))
+        
+        if(datalink_frame_send(eSerialOTACmdUpgradeDataFrame,OTA_Upgrade_Frame_e,cmd_buffer,frame_len+1+4+2))
         {
             if(get_OTA_message_result())
             {
+                RCLCPP_WARN(rclcpp::get_logger("rclcpp"),"[eSerialOTACmdUpgradeDataFrame] error num = %d",get_OTA_message_result());
                 continue;
             }
         }
         else
         {
-            return;
+            return NULL;
         }
+
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"[frame %d]%d bytes transmitted",frame_index++,frame_len);
 
         offset += frame_len;
         remainder = remainder - frame_len;
@@ -144,7 +150,7 @@ static void* ota_task(void *arg)
     /*升级完成命令*/
     cmd_buffer[0] = ota_device;
     cmd_buffer[1] = 1;
-    datalink_frame_send(eSerialOTACmdUpgradeStatus,OTA_Upgrade_End_e,cmd_buffer,2);
+    datalink_frame_send(eSerialOTACmdUpgradeEnd,OTA_Upgrade_End_e,cmd_buffer,2);
 }
 
 void ota_init(void)

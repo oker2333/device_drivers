@@ -175,7 +175,7 @@ typedef enum{
 
 /*******************OTA升级报文*********************/
 		eSerialOTACmdUpgradeStart = 0x0500,
-		eSerialOTACmdUpgradeStatus = 0x0502,
+		eSerialOTACmdUpgradeEnd = 0x0502,
 		eSerialOTACmdUpgradeDataFrame = 0x0503,
 		eSerialOTACmdUpgradeAck = 0x8500
 }TypeDefCmd;

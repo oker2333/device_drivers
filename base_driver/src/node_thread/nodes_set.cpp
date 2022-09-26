@@ -252,7 +252,7 @@ static void set_ota_upgrade(const std::shared_ptr<iflytek_robot_msg::srv::Ota::R
     }
     else if(cmd == 2)   //升级状态命令
     {
-        serial_cmd = eSerialOTACmdUpgradeStatus;
+        serial_cmd = eSerialOTACmdUpgradeEnd;
         sensor_id = OTA_Upgrade_End_e;
         len = 1;
         buffer[0] = 0;

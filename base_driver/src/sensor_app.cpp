@@ -53,15 +53,15 @@ int main(int argc, char * argv[])
 
   rclcpp::init(argc, argv);
 
-  ota_init();
-
   recv_proc_init();
+
+  ota_init();
 
   ROS2_node_start();
 
-  recv_proc_join();
-
   ota_deinit();
+
+  recv_proc_join();
 
   rclcpp::shutdown();
 
