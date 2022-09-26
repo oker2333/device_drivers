@@ -332,66 +332,6 @@ void get_station_key(int8_t *sensor_data)
 	*sensor_data = station_key;
 }
 
-static int8_t station_water_box;
-
-void set_station_water_box(int8_t sensor_data)
-{
-	station_water_box = sensor_data;
-}
-
-void get_station_water_box(int8_t *sensor_data)
-{
-	*sensor_data = station_water_box;
-}
-
-static int8_t station_collect_dust;
-
-void set_station_collect_dust(int8_t sensor_data)
-{
-	station_collect_dust = sensor_data;
-}
-
-void get_station_collect_dust(int8_t *sensor_data)
-{
-	*sensor_data = station_collect_dust;
-}
-
-static int8_t station_supply_water;
-
-void set_station_supply_water(int8_t sensor_data)
-{
-	station_supply_water = sensor_data;
-}
-
-void get_station_supply_water(int8_t *sensor_data)
-{
-	*sensor_data = station_supply_water;
-}
-
-static int8_t station_air_drying;
-
-void set_station_air_drying(int8_t sensor_data)
-{
-	station_air_drying = sensor_data;
-}
-
-void get_station_air_drying(int8_t *sensor_data)
-{
-	*sensor_data = station_air_drying;
-}
-
-static int8_t station_self_clean;
-
-void set_station_self_clean(int8_t sensor_data)
-{
-	station_self_clean = sensor_data;
-}
-
-void get_station_self_clean(int8_t *sensor_data)
-{
-	*sensor_data = station_self_clean;
-}
-
 static uint8_t wall_sensor_data;
 
 void set_wall_sensor(uint8_t sensor_data)
@@ -1382,61 +1322,6 @@ void Comm_cmdExecute(uint8_t *sysParseCmdBuf,uint16_t sysCmdLen)
             buffer[j++] = 0x00;
             buffer[j++] = eSerialReportStationKey >> 8;
             buffer[j++] = eSerialReportStationKey & 0xFF;
-            Comm_send_package(eSerialReportAckData, buffer, 3, invoke_id);
-		break;
-
-		case eSerialReportStationWaterBox:
-			RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"station_water_box = %d",sysParseCmdBuf[FRAME_DATA_OFFSET]);
-			
-			set_station_water_box(sysParseCmdBuf[FRAME_DATA_OFFSET]);
-
-            buffer[j++] = 0x00;
-            buffer[j++] = eSerialReportStationWaterBox >> 8;
-            buffer[j++] = eSerialReportStationWaterBox & 0xFF;
-            Comm_send_package(eSerialReportAckData, buffer, 3, invoke_id);
-		break;
-
-		case eSerialReportStationCollectDust:
-			RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"station_collect_dust = %d",sysParseCmdBuf[FRAME_DATA_OFFSET]);
-			
-			set_station_collect_dust(sysParseCmdBuf[FRAME_DATA_OFFSET]);
-
-            buffer[j++] = 0x00;
-            buffer[j++] = eSerialReportStationCollectDust >> 8;
-            buffer[j++] = eSerialReportStationCollectDust & 0xFF;
-            Comm_send_package(eSerialReportAckData, buffer, 3, invoke_id);
-		break;
-
-		case eSerialReportStationSupplyWater:
-			RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"station_supply_water = %d",sysParseCmdBuf[FRAME_DATA_OFFSET]);
-			
-			set_station_supply_water(sysParseCmdBuf[FRAME_DATA_OFFSET]);
-
-            buffer[j++] = 0x00;
-            buffer[j++] = eSerialReportStationSupplyWater >> 8;
-            buffer[j++] = eSerialReportStationSupplyWater & 0xFF;
-            Comm_send_package(eSerialReportAckData, buffer, 3, invoke_id);
-		break;
-
-		case eSerialReportStationAirDrying:
-			RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"station_air_drying = %d",sysParseCmdBuf[FRAME_DATA_OFFSET]);
-			
-			set_station_air_drying(sysParseCmdBuf[FRAME_DATA_OFFSET]);
-
-            buffer[j++] = 0x00;
-            buffer[j++] = eSerialReportStationAirDrying >> 8;
-            buffer[j++] = eSerialReportStationAirDrying & 0xFF;
-            Comm_send_package(eSerialReportAckData, buffer, 3, invoke_id);
-		break;
-
-		case eSerialReportStationSelfClean:
-			RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"station_self_clean = %d",sysParseCmdBuf[FRAME_DATA_OFFSET]);
-			
-			set_station_self_clean(sysParseCmdBuf[FRAME_DATA_OFFSET]);
-
-            buffer[j++] = 0x00;
-            buffer[j++] = eSerialReportStationSelfClean >> 8;
-            buffer[j++] = eSerialReportStationSelfClean & 0xFF;
             Comm_send_package(eSerialReportAckData, buffer, 3, invoke_id);
 		break;
 

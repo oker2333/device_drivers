@@ -165,11 +165,6 @@ typedef enum{
 		eSerialReportFloorMaterial 				= 0x040E,
 		eSerialReportMopStatus 				= 0x040F,
 		eSerialReportStationKey 				= 0x0410,
-		eSerialReportStationWaterBox 				= 0x0411,
-		eSerialReportStationCollectDust 				= 0x0412,
-		eSerialReportStationSupplyWater 				= 0x0413,
-		eSerialReportStationAirDrying 				= 0x0414,
-		eSerialReportStationSelfClean 				= 0x0415,
 		
 		eSerialReportAckData = 0x8400,	     	//确认应答报文（上位机 -> 下位机）
 
@@ -321,21 +316,6 @@ void get_rag_motor_current_signal(uint8_t *sensor_data);
 
 void set_station_key(int8_t sensor_data);
 void get_station_key(int8_t *sensor_data);
-
-void set_station_water_box(int8_t sensor_data);
-void get_station_water_box(int8_t *sensor_data);
-
-void set_station_collect_dust(int8_t sensor_data);
-void get_station_collect_dust(int8_t *sensor_data);
-
-void set_station_supply_water(int8_t sensor_data);
-void get_station_supply_water(int8_t *sensor_data);
-
-void set_station_air_drying(int8_t sensor_data);
-void get_station_air_drying(int8_t *sensor_data);
-
-void set_station_self_clean(int8_t sensor_data);
-void get_station_self_clean(int8_t *sensor_data);
 
 void set_OTA_message_result(uint8_t status);
 uint8_t get_OTA_message_result(void);

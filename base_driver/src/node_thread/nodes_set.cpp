@@ -828,16 +828,6 @@ void PublisherNode::sensor_data_callback(void)
 
     get_station_key(&sensor_data.station_key);
 
-    get_station_water_box(&sensor_data.station_water_box);
-
-    get_station_collect_dust(&sensor_data.station_collect_dust);
-
-    get_station_supply_water(&sensor_data.station_supply_water);
-
-    get_station_air_drying(&sensor_data.station_air_drying);
-
-    get_station_self_clean(&sensor_data.station_self_clean);
-    
     get_err_num(&err_num_data);
     sensor_data.error_signal = (uint64_t)err_num_data;
 
