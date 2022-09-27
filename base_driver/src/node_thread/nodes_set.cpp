@@ -826,8 +826,6 @@ void PublisherNode::sensor_data_callback(void)
     
     get_material(&sensor_data.material);
 
-    get_station_key(&sensor_data.station_key);
-
     get_err_num(&err_num_data);
     sensor_data.error_signal = (uint64_t)err_num_data;
 
@@ -839,7 +837,17 @@ void PublisherNode::sensor_data_callback(void)
 
     get_rag_motor_current_signal(&sensor_data.rag_motor_current_signal);
 
-    get_temperature(&sensor_data.temperature1,&sensor_data.temperature2,&sensor_data.temperature3);
+    get_station_key(&sensor_data.station_key);
+
+    sensor_data.station_out_of_contact = get_station_out_of_contact();
+    sensor_data.station_collect_dust = get_station_collect_dust();
+    sensor_data.station_supply_water = get_station_supply_water();
+    sensor_data.station_air_dry = get_station_air_dry();
+    sensor_data.station_self_clean = get_station_self_clean();
+    sensor_data.temperature1 = get_battery_temperature();
+    sensor_data.station_collect_dust_sensor = get_station_collect_dust_sensor();
+    sensor_data.station_supply_water_sensor = get_station_supply_water_sensor();
+    sensor_data.station_status = get_station_status();
 
     sensor_data_publisher->publish(sensor_data);
 }

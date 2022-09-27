@@ -623,6 +623,115 @@ void get_wheel_speed(float *l_speed_data,float *r_speed_data)
 	*r_speed_data = r_speed;
 }
 
+static int8_t station_out_of_contact;
+
+void set_station_out_of_contact(int8_t sensor_data)
+{
+	station_out_of_contact = sensor_data;
+}
+
+int8_t get_station_out_of_contact(void)
+{
+	return station_out_of_contact;
+}
+
+static int8_t station_collect_dust;
+
+void set_station_collect_dust(int8_t sensor_data)
+{
+	station_collect_dust = sensor_data;
+}
+
+int8_t get_station_collect_dust(void)
+{
+	return station_collect_dust;
+}
+
+static int8_t station_supply_water;
+
+void set_station_supply_water(int8_t sensor_data)
+{
+	station_supply_water = sensor_data;
+}
+
+int8_t get_station_supply_water(void)
+{
+	return station_supply_water;
+}
+
+static int8_t station_air_dry;
+
+void set_station_air_dry(int8_t sensor_data)
+{
+	station_air_dry = sensor_data;
+}
+
+int8_t get_station_air_dry(void)
+{
+	return station_air_dry;
+}
+
+static int8_t station_self_clean;
+
+void set_station_self_clean(int8_t sensor_data)
+{
+	station_self_clean = sensor_data;
+}
+
+int8_t get_station_self_clean(void)
+{
+	return station_self_clean;
+}
+
+static int8_t battery_temperature;
+
+void set_battery_temperature(int8_t sensor_data)
+{
+	battery_temperature = sensor_data;
+}
+
+int8_t get_battery_temperature(void)
+{
+	return battery_temperature;
+}
+
+static int8_t station_collect_dust_sensor;
+
+void set_station_collect_dust_sensor(int8_t sensor_data)
+{
+	station_collect_dust_sensor = sensor_data;
+}
+
+int8_t get_station_collect_dust_sensor(void)
+{
+	return station_collect_dust_sensor;
+}
+
+static int8_t station_supply_water_sensor;
+
+void set_station_supply_water_sensor(int8_t sensor_data)
+{
+	station_supply_water_sensor = sensor_data;
+}
+
+int8_t get_station_supply_water_sensor(void)
+{
+	return station_supply_water_sensor;
+}
+
+static int8_t station_status;
+
+void set_station_status(int8_t sensor_data)
+{
+	station_status = sensor_data;
+}
+
+int8_t get_station_status(void)
+{
+	return station_status;
+}
+
+
 float u8_to_float(uint8_t* buffer)
 {
 	union U8_TO_FLOAT temp;
@@ -1322,6 +1431,105 @@ void Comm_cmdExecute(uint8_t *sysParseCmdBuf,uint16_t sysCmdLen)
             buffer[j++] = 0x00;
             buffer[j++] = eSerialReportStationKey >> 8;
             buffer[j++] = eSerialReportStationKey & 0xFF;
+            Comm_send_package(eSerialReportAckData, buffer, 3, invoke_id);
+		break;
+
+		case eSerialReportStationOutOfContact:
+			RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"station_out_of_contact = %d",sysParseCmdBuf[FRAME_DATA_OFFSET]);
+
+			set_station_out_of_contact(sysParseCmdBuf[FRAME_DATA_OFFSET]);
+
+            buffer[j++] = 0x00;
+            buffer[j++] = eSerialReportStationOutOfContact >> 8;
+            buffer[j++] = eSerialReportStationOutOfContact & 0xFF;
+            Comm_send_package(eSerialReportAckData, buffer, 3, invoke_id);
+		break;
+
+		case eSerialReportStationCollectDust:
+			RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"station_collect_dust = %d",sysParseCmdBuf[FRAME_DATA_OFFSET]);
+
+			set_station_collect_dust(sysParseCmdBuf[FRAME_DATA_OFFSET]);
+
+            buffer[j++] = 0x00;
+            buffer[j++] = eSerialReportStationCollectDust >> 8;
+            buffer[j++] = eSerialReportStationCollectDust & 0xFF;
+            Comm_send_package(eSerialReportAckData, buffer, 3, invoke_id);
+		break;
+
+		case eSerialReportStationSupplyWater:
+			RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"station_supply_water = %d",sysParseCmdBuf[FRAME_DATA_OFFSET]);
+
+			set_station_supply_water(sysParseCmdBuf[FRAME_DATA_OFFSET]);
+
+            buffer[j++] = 0x00;
+            buffer[j++] = eSerialReportStationSupplyWater >> 8;
+            buffer[j++] = eSerialReportStationSupplyWater & 0xFF;
+            Comm_send_package(eSerialReportAckData, buffer, 3, invoke_id);
+		break;
+
+		case eSerialReportStationAirDry:
+			RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"station_air_dry = %d",sysParseCmdBuf[FRAME_DATA_OFFSET]);
+
+			set_station_air_dry(sysParseCmdBuf[FRAME_DATA_OFFSET]);
+
+            buffer[j++] = 0x00;
+            buffer[j++] = eSerialReportStationAirDry >> 8;
+            buffer[j++] = eSerialReportStationAirDry & 0xFF;
+            Comm_send_package(eSerialReportAckData, buffer, 3, invoke_id);
+		break;
+
+		case eSerialReportStationSelfClean:
+			RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"station_self_clean = %d",sysParseCmdBuf[FRAME_DATA_OFFSET]);
+
+			set_station_self_clean(sysParseCmdBuf[FRAME_DATA_OFFSET]);
+
+            buffer[j++] = 0x00;
+            buffer[j++] = eSerialReportStationSelfClean >> 8;
+            buffer[j++] = eSerialReportStationSelfClean & 0xFF;
+            Comm_send_package(eSerialReportAckData, buffer, 3, invoke_id);
+		break;
+
+		case eSerialReportBatteryTemperature:
+			RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"battery_temperature = %d",sysParseCmdBuf[FRAME_DATA_OFFSET]);
+
+			set_battery_temperature(sysParseCmdBuf[FRAME_DATA_OFFSET]);
+
+            buffer[j++] = 0x00;
+            buffer[j++] = eSerialReportBatteryTemperature >> 8;
+            buffer[j++] = eSerialReportBatteryTemperature & 0xFF;
+            Comm_send_package(eSerialReportAckData, buffer, 3, invoke_id);
+		break;
+
+		case eSerialReportStationCollectDustSensor:
+			RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"station_collect_dust_sensor = %d",sysParseCmdBuf[FRAME_DATA_OFFSET]);
+
+			set_station_collect_dust_sensor(sysParseCmdBuf[FRAME_DATA_OFFSET]);
+
+            buffer[j++] = 0x00;
+            buffer[j++] = eSerialReportStationCollectDustSensor >> 8;
+            buffer[j++] = eSerialReportStationCollectDustSensor & 0xFF;
+            Comm_send_package(eSerialReportAckData, buffer, 3, invoke_id);
+		break;
+
+		case eSerialReportStationSupplyWaterSensor:
+			RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"station_supply_water_sensor = %d",sysParseCmdBuf[FRAME_DATA_OFFSET]);
+
+			set_station_supply_water_sensor(sysParseCmdBuf[FRAME_DATA_OFFSET]);
+
+            buffer[j++] = 0x00;
+            buffer[j++] = eSerialReportStationSupplyWaterSensor >> 8;
+            buffer[j++] = eSerialReportStationSupplyWaterSensor & 0xFF;
+            Comm_send_package(eSerialReportAckData, buffer, 3, invoke_id);
+		break;
+
+		case eSerialReportStationStatus:
+			RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"station_status = %d",sysParseCmdBuf[FRAME_DATA_OFFSET]);
+
+			set_station_status(sysParseCmdBuf[FRAME_DATA_OFFSET]);
+
+            buffer[j++] = 0x00;
+            buffer[j++] = eSerialReportStationStatus >> 8;
+            buffer[j++] = eSerialReportStationStatus & 0xFF;
             Comm_send_package(eSerialReportAckData, buffer, 3, invoke_id);
 		break;
 

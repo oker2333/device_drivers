@@ -55,11 +55,7 @@ int main(int argc, char * argv[])
 
   recv_proc_init();
 
-  ota_init();
-
   ROS2_node_start();
-
-  ota_deinit();
 
   recv_proc_join();
 

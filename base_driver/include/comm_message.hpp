@@ -165,6 +165,15 @@ typedef enum{
 		eSerialReportFloorMaterial 				= 0x040E,
 		eSerialReportMopStatus 				= 0x040F,
 		eSerialReportStationKey 				= 0x0410,
+		eSerialReportStationOutOfContact 				= 0x0411,
+		eSerialReportStationCollectDust 				= 0x0412,
+		eSerialReportStationSupplyWater 				= 0x0413,
+		eSerialReportStationAirDry 				= 0x0414,
+		eSerialReportStationSelfClean 				= 0x0415,
+		eSerialReportBatteryTemperature 				= 0x0416,
+		eSerialReportStationCollectDustSensor 				= 0x0417,
+		eSerialReportStationSupplyWaterSensor 				= 0x0418,
+		eSerialReportStationStatus 				= 0x0419,
 		
 		eSerialReportAckData = 0x8400,	     	//确认应答报文（上位机 -> 下位机）
 
@@ -345,6 +354,25 @@ void set_wheel_speed(float l_speed_data,float r_speed_data);
 void get_wheel_speed(float *l_speed_data,float *r_speed_data);
 void set_mop_status(int8_t sensor_data);
 void get_mop_status(int8_t *sensor_data);
+
+void set_station_out_of_contact(int8_t sensor_data);
+int8_t get_station_out_of_contact(void);
+void set_station_collect_dust(int8_t sensor_data);
+int8_t get_station_collect_dust(void);
+void set_station_supply_water(int8_t sensor_data);
+int8_t get_station_supply_water(void);
+void set_station_air_dry(int8_t sensor_data);
+int8_t get_station_air_dry(void);
+void set_station_self_clean(int8_t sensor_data);
+int8_t get_station_self_clean(void);
+void set_battery_temperature(int8_t sensor_data);
+int8_t get_battery_temperature(void);
+void set_station_collect_dust_sensor(int8_t sensor_data);
+int8_t get_station_collect_dust_sensor(void);
+void set_station_supply_water_sensor(int8_t sensor_data);
+int8_t get_station_supply_water_sensor(void);
+void set_station_status(int8_t sensor_data);
+int8_t get_station_status(void);
 
 float u8_to_float(uint8_t* buffer);
 void float_to_u8(uint8_t* buffer,float value);
