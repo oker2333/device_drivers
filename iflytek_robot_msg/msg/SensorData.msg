@@ -111,3 +111,65 @@ float32 temperature3    #温度传感器3
 #0x04:模式切换按键事件
 int8 station_key
 
+#主机基站失联状态
+#0：通信正常
+#1：通信断开
+int8 station_out_of_contact
+
+#基站集尘状态
+#0：空闲/正常执行
+#1：集尘完成
+#2：忙，当前流程暂不能执行
+#3：指令异常
+#4：异常结束
+int8 station_collect_dust
+
+#基站补水状态
+#0：空闲/正常执行
+#1：补水完成
+#2：忙，当前流程暂不能执行
+#3：指令异常
+#4：异常结束
+int8 station_supply_water
+
+#基站风干状态
+#0：空闲/正常执行
+#1：风干完成
+#2：忙，当前流程暂不能执行
+#3：指令异常
+#4：异常结束
+int8 station_air_dry
+
+#基站自清洁状态
+#0：空闲/正常执行
+#1：自清洁完成
+#2：忙，当前流程暂不能执行
+#3：指令异常
+#4：异常结束
+int8 station_self_clean
+
+#基站集尘相关传感器
+#Bit0：尘袋取出
+#Bit1：尘盒打开
+#Bit2：频繁集尘
+#Bit3：尘袋满
+#Bit4：风道堵塞
+#Bit5：传感器故障
+int8 station_collect_dust_sensor
+
+#基站补水相关传感器
+#Bit0：清水箱不在位
+#Bit1：清水箱空
+#Bit2：污水箱不在位
+#Bit3：污水箱满
+#Bit4：清水泵异常
+#Bit5：污水泵异常
+#Bit6：抽水泵异常
+int8 station_supply_water_sensor
+
+#基站其它状态
+#Bit0：扫地机被取出
+#Bit1：银离子检测
+#Bit3：托盘检测
+#Bit4：溢水检测
+int8 station_status
