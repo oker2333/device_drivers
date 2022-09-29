@@ -84,12 +84,12 @@ void get_online_message_result(uint8_t* online_result_p,uint16_t* slave_protocol
 	RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"[original data]online_result = %d,slave_protocol_version = %d",online_result,slave_protocol_version);
 }
 
-static uint8_t sensor_data[10] = {0};
+static uint8_t sensor_data[13] = {0};
 
 void set_inquiry_sensor_data_result(uint8_t* buffer)
 {
 	int i = 0;
-	while(i < 10)
+	while(i < 13)
 	{
 		sensor_data[i] = buffer[i];
 		i++;
@@ -99,8 +99,15 @@ void set_inquiry_sensor_data_result(uint8_t* buffer)
 	set_pressure_sensor(buffer[2]);
 	set_lift_off(buffer[3]);
 	set_dust_box(buffer[4]);
+	set_material(buffer[5]);
 	set_charge_signal(buffer[6]);
-	RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"battery_quantity = %d,drop_down_data = %d,pressure_sensor_data = %d,lift_off_data = %d,dust_box_data = %d,charge_signal_data = %d",buffer[0],buffer[1],buffer[2],buffer[3],buffer[4],buffer[6]);
+	set_mop_status(buffer[7]);
+	set_battery_temperature(buffer[8]);
+	set_water_level(buffer[9]);
+	set_station_collect_dust_sensor(buffer[10]);
+	set_station_supply_water_sensor(buffer[11]);
+	set_station_status(buffer[12]);
+	RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"battery_quantity = %d,drop_down = %d,pressure_sensor = %d,lift_off = %d,dust_box = %d,material = %d,charge_signal = %d,mop_status = %d,battery_temperature = %d,water_level = %d,station_collect_dust_sensor = %d,station_supply_water_sensor = %d,station_status = %d",buffer[0],buffer[1],buffer[2],buffer[3],buffer[4],buffer[5],buffer[6],buffer[7],buffer[8],buffer[9],buffer[10],buffer[11],buffer[12]);
 }
 
 uint8_t get_inquiry_sensor_data_result(uint16_t sensor_id)
@@ -1213,7 +1220,6 @@ void Comm_cmdExecute(uint8_t *sysParseCmdBuf,uint16_t sysCmdLen)
 		
 		case eSerialAckSensorData:
 			set_inquiry_sensor_data_result(&sysParseCmdBuf[FRAME_DATA_OFFSET]);
-			semaphore_post(InquirySensorData_e);
 		break;
 
 		/*******************控制消息报文*********************/
@@ -1226,8 +1232,6 @@ void Comm_cmdExecute(uint8_t *sysParseCmdBuf,uint16_t sysCmdLen)
 				semaphore_post(brushes_e);
 			else if(cmd == eSerialSetMopMotorVelocityLevel)
 				semaphore_post(MopMotor_e);
-			else if(cmd == eSerialSetTimingReportParam)
-				semaphore_post(TimingReportParam_e);
 			else if(cmd == eSerialSetSensorOpenStatus)
 				semaphore_post(SensorEnabling_e);
 			else if(cmd == eSerialSetPwrOff)
