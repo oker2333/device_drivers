@@ -59,10 +59,6 @@ uint8 dust_box_status
 # 0x05：长按清扫+回充键
 uint8 button
 
-#墙检信号
-# bit0: 为1 墙检触发， 为0 墙检不触发
-uint8 wall_detect_status
-
 #超声波材质传感器
 # 0:地面 1:地毯
 int8 material
