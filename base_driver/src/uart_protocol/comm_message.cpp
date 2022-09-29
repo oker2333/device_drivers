@@ -283,7 +283,7 @@ static uint8_t water_level_data;
 
 void set_water_level(uint8_t sensor_data)
 {
-	water_level_data = !sensor_data;
+	water_level_data = sensor_data;
 }
 
 void get_water_level(uint8_t *sensor_data)
