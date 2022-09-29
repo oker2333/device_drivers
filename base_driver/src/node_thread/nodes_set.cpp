@@ -571,48 +571,48 @@ void universal_control(const std::shared_ptr<iflytek_robot_msg::srv::UniversalCm
     // 0:积尘，1:补水，2:洗拖布，3:风干，4:充电，5:自清洁
     if(type == 0)
     {
-        buffer[0] = cmd;
-        buffer[1] = 0;
+        buffer[0] = 0;
+        buffer[1] = cmd;
         len = 2;
         eSerialSetCmd = eSerialSetCollectDust;
         sensor_id = CollectDust_e;
     }
     else if(type == 1)
     {
-        buffer[0] = cmd;
-        buffer[1] = 0;
+        buffer[0] = 0;
+        buffer[1] = cmd;
         len = 2;
         eSerialSetCmd = eSerialSetSupplyWater;
         sensor_id = SupplyWater_e;
     }
     else if(type == 2)
     {
-        buffer[0] = cmd;
-        buffer[1] = 0;
+        buffer[0] = 0;
+        buffer[1] = cmd;
         len = 2;
         eSerialSetCmd = eSerialSetCleanMop;
         sensor_id = CleanMop_e;
     }
     else if(type == 3)
     {
-        buffer[0] = cmd;
-        buffer[1] = 0;
+        buffer[0] = 0;
+        buffer[1] = cmd;
         len = 2;
         eSerialSetCmd = eSerialSetAirDrying;
         sensor_id = AirDrying_e;
     }
     else if(type == 4)
     {
-        buffer[0] = cmd;
-        buffer[1] = 0;
+        buffer[0] = 0;
+        buffer[1] = cmd;
         len = 2;
         eSerialSetCmd = eSerialSetCharging;
         sensor_id = Charging_e;
     }
     else if(type == 5)
     {
-        buffer[0] = cmd;
-        buffer[1] = 0;
+        buffer[0] = 0;
+        buffer[1] = cmd;
         len = 2;
         eSerialSetCmd = eSerialSetSelfClean;
         sensor_id = SelfClean_e;
@@ -630,7 +630,7 @@ void universal_control(const std::shared_ptr<iflytek_robot_msg::srv::UniversalCm
         return;
     }
 
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"[universal_control]:request->type = %d,request->cmd,response->success = %d",request->type,request->cmd,response->success);
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"[universal_control]:request->type = %d,request->cmd = %d,response->success = %d",request->type,request->cmd,response->success);
     if(datalink_frame_send(eSerialSetCmd,sensor_id,buffer,len))
     {
         response->success = !get_control_message_result(eSerialSetCmd);
