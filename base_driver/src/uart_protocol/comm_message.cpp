@@ -110,11 +110,6 @@ void set_inquiry_sensor_data_result(uint8_t* buffer)
 	RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"battery_quantity = %d,drop_down = %d,pressure_sensor = %d,lift_off = %d,dust_box = %d,material = %d,charge_signal = %d,mop_status = %d,battery_temperature = %d,water_level = %d,station_collect_dust_sensor = %d,station_supply_water_sensor = %d,station_status = %d",buffer[0],buffer[1],buffer[2],buffer[3],buffer[4],buffer[5],buffer[6],buffer[7],buffer[8],buffer[9],buffer[10],buffer[11],buffer[12]);
 }
 
-uint8_t get_inquiry_sensor_data_result(uint16_t sensor_id)
-{
-	return sensor_data[sensor_id];
-}
-
 static uint16_t sensor_status_result = 0;
 
 void set_sensor_status_result(uint16_t status)

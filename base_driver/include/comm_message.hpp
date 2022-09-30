@@ -333,7 +333,6 @@ void set_sensor_status_result(uint16_t status);
 uint8_t get_sensor_status_result(uint16_t sysParseCmdData);
 
 void set_inquiry_sensor_data_result(uint8_t* buffer);
-uint8_t get_inquiry_sensor_data_result(uint16_t sensor_id);
 
 void set_online_message_result(uint8_t* buffer);
 void get_online_message_result(uint8_t* onlie_result_p,uint16_t* slave_protocol_version_p);

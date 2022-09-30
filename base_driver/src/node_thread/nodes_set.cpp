@@ -26,7 +26,6 @@
 #include "iflytek_robot_msg/srv/ota.hpp"
 #include "iflytek_robot_msg/srv/wifi_led.hpp"
 #include "iflytek_robot_msg/srv/sensor_status.hpp"
-#include "iflytek_robot_msg/srv/inquiry_sensor_data.hpp"
 
 #include "sensor_msgs/msg/imu.hpp"
 #include "nav_msgs/msg/odometry.hpp"
@@ -200,23 +199,6 @@ static void set_wifi_led(const std::shared_ptr<iflytek_robot_msg::srv::WifiLed::
         response->success = 0;
     }
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"[set_wifi_led]:request->led_type %d,response->success %d",request->led_type,response->success);
-}
-
-static void get_inquiry_sensor_data(const std::shared_ptr<iflytek_robot_msg::srv::InquirySensorData::Request> request,
-          std::shared_ptr<iflytek_robot_msg::srv::InquirySensorData::Response> response)
-{
-    int32_t cmd = request->cmd;
-
-    if(datalink_frame_send(eSerialInquirySensorData,InquirySensorData_e,NULL,0))
-    {
-        response->sensor_data = get_inquiry_sensor_data_result(cmd);
-        response->success = 1;
-    }
-    else
-    {
-        response->success = 0;
-    }
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"[get_inquiry_sensor_data]:request->cmd %d,response->sensor_data %d,response->success %d",request->cmd,response->sensor_data,response->success);
 }
 
 static void get_sensor_status(const std::shared_ptr<iflytek_robot_msg::srv::SensorStatus::Request> request,
@@ -1058,14 +1040,6 @@ void ROS2_node_start(void)
     velocity_executor.add_node(Velocity_Node_s);
     std::thread velocity_thread(std::bind(&rclcpp::executors::SingleThreadedExecutor::spin, &velocity_executor));
 
-    //主动查询底盘传感器状态server
-    rclcpp::executors::SingleThreadedExecutor inquiry_sensor_data_executor;
-    std::shared_ptr<rclcpp::Node> inquiry_sensor_data_node = rclcpp::Node::make_shared("inquiry_sensor_data_server");
-    rclcpp::Service<iflytek_robot_msg::srv::InquirySensorData>::SharedPtr inquiry_sensor_data_server =
-      inquiry_sensor_data_node->create_service<iflytek_robot_msg::srv::InquirySensorData>("inquiry_sensor_data", &get_inquiry_sensor_data);
-    inquiry_sensor_data_executor.add_node(inquiry_sensor_data_node);
-    std::thread inquiry_sensor_data_thread(std::bind(&rclcpp::executors::SingleThreadedExecutor::spin, &inquiry_sensor_data_executor));
-
     //传感器使能状态server
     rclcpp::executors::SingleThreadedExecutor sensor_status_executor;
     std::shared_ptr<rclcpp::Node> sensor_status_node = rclcpp::Node::make_shared("sensor_status_server");
@@ -1150,7 +1124,6 @@ void ROS2_node_start(void)
     brushes_thread.join();
     clean_dust_motor_thread.join();
     online_message_thread.join();
-    inquiry_sensor_data_thread.join();
     sensor_status_thread.join();
     pump_motor_thread.join();
     mop_motor_thread.join();
