@@ -302,9 +302,6 @@ void get_water_box(uint8_t *sensor_data);
 void set_button(uint8_t sensor_data);
 void get_button(uint8_t *sensor_data);
 
-void set_wall_sensor(uint8_t sensor_data);
-void get_wall_sensor(uint8_t *sensor_data);
-
 void set_err_num(uint8_t sensor_data);
 void get_err_num(uint8_t *sensor_data);
 

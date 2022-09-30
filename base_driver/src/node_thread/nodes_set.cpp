@@ -803,8 +803,6 @@ void PublisherNode::sensor_data_callback(void)
     get_button(&sensor_data.button);
 
     get_mop_status(&sensor_data.mop_status);
-
-    get_wall_sensor(&sensor_data.wall_detect_status);
     
     get_material(&sensor_data.material);
 

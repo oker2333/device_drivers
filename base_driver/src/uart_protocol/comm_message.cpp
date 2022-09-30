@@ -334,18 +334,6 @@ void get_station_key(int8_t *sensor_data)
 	*sensor_data = station_key;
 }
 
-static uint8_t wall_sensor_data;
-
-void set_wall_sensor(uint8_t sensor_data)
-{
-	wall_sensor_data = sensor_data;
-}
-
-void get_wall_sensor(uint8_t *sensor_data)
-{
-	*sensor_data = wall_sensor_data;
-}
-
 static uint8_t drop_down_data;
 
 void set_drop_down(uint8_t sensor_data)
@@ -1366,14 +1354,7 @@ void Comm_cmdExecute(uint8_t *sysParseCmdBuf,uint16_t sysCmdLen)
 		break;
 
 		case eSerialReportWallSensorData:
-			RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"wall_sensor_data = %d",sysParseCmdBuf[FRAME_DATA_OFFSET]);
 
-			set_wall_sensor(sysParseCmdBuf[FRAME_DATA_OFFSET]);
-
-            buffer[j++] = 0x00;
-            buffer[j++] = eSerialReportWallSensorData >> 8;
-            buffer[j++] = eSerialReportWallSensorData & 0xFF;
-            Comm_send_package(eSerialReportAckData, buffer, 3, invoke_id);
 		break;
 
 		case eSerialReportErrorNum:
