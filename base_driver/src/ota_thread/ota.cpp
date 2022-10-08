@@ -44,7 +44,6 @@ int GetFileSize(char *_pName)
 
 static void* ota_task(void *arg)
 {
-    sleep(3);
     int64_t read_bytes = 0;
     int64_t read_counter = 0;
     uint8_t cmd_buffer[CMD_BUFFER_LEN];
@@ -90,9 +89,7 @@ static void* ota_task(void *arg)
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"%s CRC16 = 0x%x",arg,CRC16);
 
     cmd_buffer[0] = ota_device;
-    cmd_buffer[1] = (CRC16 >> 8) & 0xff;
-    cmd_buffer[2] = (CRC16 >> 0) & 0xff;
-    if(!datalink_frame_send(eSerialOTACmdUpgradeStart,OTA_Upgrade_Start_e,cmd_buffer,3)){
+    if(!datalink_frame_send(eSerialOTACmdUpgradeStart,OTA_Upgrade_Start_e,cmd_buffer,1)){
         return NULL;
     }
 
@@ -149,8 +146,13 @@ static void* ota_task(void *arg)
 
     /*升级完成命令*/
     cmd_buffer[0] = ota_device;
-    cmd_buffer[1] = 1;
-    datalink_frame_send(eSerialOTACmdUpgradeEnd,OTA_Upgrade_End_e,cmd_buffer,2);
+
+    cmd_buffer[1] = (CRC16 >> 8) & 0xff;
+    cmd_buffer[2] = (CRC16 >> 0) & 0xff;
+
+    cmd_buffer[3] = 1;
+
+    datalink_frame_send(eSerialOTACmdUpgradeEnd,OTA_Upgrade_End_e,cmd_buffer,4);
 }
 
 void ota_init(void)
