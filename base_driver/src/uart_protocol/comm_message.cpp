@@ -18,6 +18,8 @@ bool datalink_frame_send(TypeDefCmd cmd,Sensor_Id_t id,uint8_t* buffer,uint16_t 
 	RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"[datalink_frame_send]cmd = 0x%x",cmd);
 	uint16_t invoke_id = 0;
 	bool ret = false;
+	uint32_t fail_count = 0;
+
 	for(int i = 1;i <= RYTEIES;i++)
 	{
 		invoke_id = find_free_invoke_id();
@@ -27,8 +29,12 @@ bool datalink_frame_send(TypeDefCmd cmd,Sensor_Id_t id,uint8_t* buffer,uint16_t 
 			ret = true;
             break;
         }else{
-			RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),"[datalink_frame_send]wait ack failed %d times",i);
+			fail_count++;
 		}
+	}
+	if(fail_count)
+	{
+		RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),"[datalink_frame_send]wait ack failed %d times",fail_count);
 	}
 	return ret;
 }
@@ -1258,7 +1264,7 @@ void Comm_cmdExecute(uint8_t *sysParseCmdBuf,uint16_t sysCmdLen)
 		break;
 
 		case eSerialReportMopStatus:
-			RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"mop_status = %ld%%",sysParseCmdBuf[FRAME_DATA_OFFSET]);
+			RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"mop_status = %ld",sysParseCmdBuf[FRAME_DATA_OFFSET]);
 			set_mop_status(sysParseCmdBuf[FRAME_DATA_OFFSET]);
 			
             buffer[j++] = 0x00;

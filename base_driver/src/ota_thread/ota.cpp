@@ -19,7 +19,19 @@
 #define HOST_FRAME_MAX_LEN 128
 #define STATION_FRAME_MAX_LEN 16
 
-static pthread_t ota_id;
+
+
+static int32_t ota_status = 0;  //0:无ota升级，1:mcu升级，2:station升级
+
+void set_ota_status(int32_t status)
+{
+    ota_status = status;
+}
+
+int32_t get_ota_status(void)
+{
+    return ota_status;
+}
 
 int GetFileSize(char *_pName) 
 {
@@ -42,19 +54,29 @@ int GetFileSize(char *_pName)
 
 #define CMD_BUFFER_LEN 200
 
-static void* ota_task(void *arg)
+void ota_task(char *file_name,int32_t ota_dev)
 {
+    if(ota_dev == HOST)
+    {
+        set_ota_status(MCU_OTA);
+    }else{
+        set_ota_status(STATION_OTA);
+    }else{
+        RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),"invalid ota device");
+        return;
+    }
+
     int64_t read_bytes = 0;
     int64_t read_counter = 0;
     uint8_t cmd_buffer[CMD_BUFFER_LEN];
     
-    int64_t file_size = GetFileSize(arg);
+    int64_t file_size = GetFileSize(file_name);
     if(file_size <= 0){
-        RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),"get %s file size failed",arg);
+        RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),"get %s file size failed",file_name);
         return NULL;
     }
 
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"now start to download %s,file size = %ld bytes",arg,file_size);
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"now start to download %s,file size = %ld bytes",file_name,file_size);
 
     uint8_t *ota_buff = malloc(file_size);
     if(ota_buff == NULL)
@@ -63,9 +85,9 @@ static void* ota_task(void *arg)
         return NULL;
     }
 
-    int fd = open(arg,O_RDONLY);
+    int fd = open(file_name,O_RDONLY);
     if(fd < 0){
-        RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),"open %s failed",arg);
+        RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),"open %s failed",file_name);
     }
 
     while(read_bytes = read(fd,&ota_buff[read_counter],file_size))
@@ -83,10 +105,10 @@ static void* ota_task(void *arg)
 
     //开始升级命令
     uint8_t result = 0;
-    uint8_t ota_device = HOST;
+    uint8_t ota_device = ota_dev;
     uint16_t CRC16 = CRC16_CCITT_FALSE(ota_buff,file_size);
 
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"%s CRC16 = 0x%x",arg,CRC16);
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"%s CRC16 = 0x%x",file_name,CRC16);
 
     cmd_buffer[0] = ota_device;
     if(!datalink_frame_send(eSerialOTACmdUpgradeStart,OTA_Upgrade_Start_e,cmd_buffer,1)){
@@ -150,17 +172,7 @@ static void* ota_task(void *arg)
     cmd_buffer[1] = (CRC16 >> 8) & 0xff;
     cmd_buffer[2] = (CRC16 >> 0) & 0xff;
 
-    cmd_buffer[3] = 1;
+    cmd_buffer[3] = 0;
 
     datalink_frame_send(eSerialOTACmdUpgradeEnd,OTA_Upgrade_End_e,cmd_buffer,4);
-}
-
-void ota_init(void)
-{
-    pthread_create(&ota_id,NULL,ota_task,"gd32vct6.bin");
-}
-
-void ota_deinit(void)
-{
-    pthread_join(ota_id,NULL);
 }
