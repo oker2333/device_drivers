@@ -13,13 +13,8 @@
 #include "rclcpp/rclcpp.hpp"
 #include "comm_message.hpp"
 
-#define HOST 0
-#define STATION 1
-
 #define HOST_FRAME_MAX_LEN 128
 #define STATION_FRAME_MAX_LEN 16
-
-
 
 static int32_t ota_status = 0;  //0:无ota升级，1:mcu升级，2:station升级
 
@@ -59,9 +54,10 @@ void ota_task(char *file_name,int32_t ota_dev)
     if(ota_dev == HOST)
     {
         set_ota_status(MCU_OTA);
-    }else{
+    }else if(ota_dev == STATION){
         set_ota_status(STATION_OTA);
     }else{
+        set_ota_status(NONE_OTA);
         RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),"invalid ota device");
         return;
     }
