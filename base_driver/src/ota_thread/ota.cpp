@@ -16,18 +16,6 @@
 #define HOST_FRAME_MAX_LEN 128
 #define STATION_FRAME_MAX_LEN 16
 
-static int32_t ota_status = 0;  //0:无ota升级，1:mcu升级，2:station升级
-
-void set_ota_status(int32_t status)
-{
-    ota_status = status;
-}
-
-int32_t get_ota_status(void)
-{
-    return ota_status;
-}
-
 int GetFileSize(char *_pName) 
 {
    int iFd = -1;
@@ -49,17 +37,16 @@ int GetFileSize(char *_pName)
 
 #define CMD_BUFFER_LEN 200
 
-void ota_task(char *file_name,int32_t ota_dev)
+int ota_task(char *file_name,int32_t ota_dev)
 {
     if(ota_dev == HOST)
     {
-        set_ota_status(MCU_OTA);
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"ota device is host");
     }else if(ota_dev == STATION){
-        set_ota_status(STATION_OTA);
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"ota device is station");
     }else{
-        set_ota_status(NONE_OTA);
         RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),"invalid ota device");
-        return;
+        return -1;
     }
 
     int64_t read_bytes = 0;
@@ -69,7 +56,7 @@ void ota_task(char *file_name,int32_t ota_dev)
     int64_t file_size = GetFileSize(file_name);
     if(file_size <= 0){
         RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),"get %s file size failed",file_name);
-        return NULL;
+        return -1;
     }
 
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"now start to download %s,file size = %ld bytes",file_name,file_size);
@@ -78,7 +65,7 @@ void ota_task(char *file_name,int32_t ota_dev)
     if(ota_buff == NULL)
     {
         RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),"ota_buff malloc failed");
-        return NULL;
+        return -1;
     }
 
     int fd = open(file_name,O_RDONLY);
@@ -94,7 +81,8 @@ void ota_task(char *file_name,int32_t ota_dev)
         if(read_counter == file_size){
             break;
         }else if(read_counter > file_size){
-            return NULL;
+            close(fd);
+            return -1;
         }
     }
     close(fd);
@@ -108,7 +96,7 @@ void ota_task(char *file_name,int32_t ota_dev)
 
     cmd_buffer[0] = ota_device;
     if(!datalink_frame_send(eSerialOTACmdUpgradeStart,OTA_Upgrade_Start_e,cmd_buffer,1)){
-        return NULL;
+        return -1;
     }
 
     uint16_t frame_index = 0;
@@ -141,7 +129,7 @@ void ota_task(char *file_name,int32_t ota_dev)
         }
         else
         {
-            return NULL;
+            return -1;
         }
 
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"[frame %d]%d bytes transmitted",frame_index++,frame_len);
@@ -171,4 +159,5 @@ void ota_task(char *file_name,int32_t ota_dev)
     cmd_buffer[3] = 0;
 
     datalink_frame_send(eSerialOTACmdUpgradeEnd,OTA_Upgrade_End_e,cmd_buffer,4);
+    return 0;
 }
