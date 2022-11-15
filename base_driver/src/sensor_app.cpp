@@ -49,17 +49,36 @@ void InitSignal(void)
 
 int main(int argc, char * argv[])
 {
-  InitSignal();
+    InitSignal();
 
-  rclcpp::init(argc, argv);
+    if(argc != 4)
+    {
+        printf("usage:./sensor_app + file_name + ota_count + /dev/ttyUSBx\n");
+        return 0;
+    }
 
-  recv_proc_init();
+    char *file_name = argv[1];
+    int ota_count = atoi(argv[2]);
+    char *uart_dev = argv[3];
 
-  ROS2_node_start();
+    int fail_count = 0;
 
-  recv_proc_join();
+    rclcpp::init(argc, argv);
 
-  rclcpp::shutdown();
+    recv_proc_init(uart_dev);
 
-  return 0;
+    for(int i = 0;i < ota_count;i++)
+    {
+        if(ota_task(file_name,HOST) == -1)
+        {
+            fail_count++;
+        }
+    }
+    printf("ota_count = %d,fail_count = %d\n",ota_count,fail_count);
+
+    recv_proc_join();
+
+    rclcpp::shutdown();
+
+    return 0;
 }

@@ -1,10 +1,8 @@
 #include "uart_ttys.hpp"
 
-#define UART_DEV    "/dev/ttyS0"
-
 static int fd_ttys = -1;
 
-int uart_init(void)
+int uart_init(char *UART_DEV)
 {
     fd_ttys = open(UART_DEV, O_RDWR|O_NOCTTY);
     if(-1 == fd_ttys)

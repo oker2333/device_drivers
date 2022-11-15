@@ -51,9 +51,9 @@ static void* recv_proc_task(void *arg)
     return arg;
 }
 
-void recv_proc_init(void)
+void recv_proc_init(char *uart_dev)
 {
-    int ret = uart_init();
+    int ret = uart_init(uart_dev);
     pub_sem_init();
     if(ret == 0)
         pthread_create(&recv_proc_id,NULL,recv_proc_task,NULL);

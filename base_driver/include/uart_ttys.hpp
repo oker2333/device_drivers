@@ -13,7 +13,7 @@
 #include <stdint.h>
 
 
-int uart_init(void);
+int uart_init(char *UART_DEV);
 int uart_write(uint8_t *w_buff, uint16_t len);
 int uart_read(uint8_t *buff,uint16_t len);
 void uart_close(void);
