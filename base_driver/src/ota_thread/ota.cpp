@@ -13,7 +13,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "comm_message.hpp"
 
-#define HOST_FRAME_MAX_LEN 128
+#define APP_FRAME_MAX_LEN 128
 #define STATION_FRAME_MAX_LEN 16
 
 int GetFileSize(char *_pName) 
@@ -39,11 +39,11 @@ int GetFileSize(char *_pName)
 
 int ota_task(char *file_name,int32_t ota_dev)
 {
-    if(ota_dev == HOST)
+    if(ota_dev == APP)
     {
-        RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"ota device is host");
-    }else if(ota_dev == STATION){
-        RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"ota device is station");
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"ota device is APP");
+    }else if(ota_dev == BOOT){
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"ota device is boot");
     }else{
         RCLCPP_ERROR(rclcpp::get_logger("rclcpp"),"invalid ota device");
         return -1;
@@ -102,7 +102,7 @@ int ota_task(char *file_name,int32_t ota_dev)
     uint16_t frame_index = 0;
     uint32_t offset = 0;
     uint32_t remainder = file_size;
-    uint16_t frame_max_len = HOST_FRAME_MAX_LEN;
+    uint16_t frame_max_len = APP_FRAME_MAX_LEN;
     uint16_t frame_len = frame_max_len;
 
     cmd_buffer[0] = ota_device;     /*升级类型*/

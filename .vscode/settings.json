@@ -3,5 +3,6 @@
         "memory": "cpp",
         "istream": "cpp",
         "*.idl": "cpp"
-    }
+    },
+    "cmake.configureOnOpen": false
 }

@@ -47,19 +47,25 @@ void InitSignal(void)
     }
 }
 
+/*
+usage:
+  ./sensor_app + robot_app.bin ota_count /dev/ttyUSB0
+*/
+
 int main(int argc, char * argv[])
 {
     InitSignal();
 
-    if(argc != 4)
+    if(argc != 5)
     {
-        printf("usage:./sensor_app + file_name + ota_count + /dev/ttyUSBx\n");
+        printf("usage:./sensor_app + section + file_name + ota_count + /dev/ttyUSBx\n");
         return 0;
     }
 
-    char *file_name = argv[1];
-    int ota_count = atoi(argv[2]);
-    char *uart_dev = argv[3];
+    int32_t ota_dev = atoi(argv[1]);
+    char *file_name = argv[2];
+    int ota_count = atoi(argv[3]);
+    char *uart_dev = argv[4];
 
     int fail_count = 0;
 
@@ -69,16 +75,16 @@ int main(int argc, char * argv[])
 
     for(int i = 0;i < ota_count;i++)
     {
-        if(ota_task(file_name,HOST) == -1)
+        if(ota_task(file_name,ota_dev) == -1)
         {
             fail_count++;
         }
     }
     printf("ota_count = %d,fail_count = %d\n",ota_count,fail_count);
 
-    recv_proc_join();
-
     rclcpp::shutdown();
+
+    recv_proc_join();
 
     return 0;
 }
